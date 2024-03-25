@@ -12,15 +12,13 @@ import (
 )
 
 func main() {
-	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
+	logger := log.New(os.Stdout, "product-api | ", log.LstdFlags)
 
-	helloHandler := handlers.NewHello(logger)
-	byHandler := handlers.NewGoodBye(logger)
+	productsHandler := handlers.NewProducts(logger)
 
 	serveMux := http.NewServeMux()
 
-	serveMux.Handle("/", helloHandler)
-	serveMux.Handle("/bye", byHandler)
+	serveMux.Handle("/", productsHandler)
 
 	server := &http.Server{
 		Addr:         ":8080",
@@ -29,7 +27,9 @@ func main() {
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
 	}
+
 	go func() {
+		logger.Printf("Starting server at %d.", 8080)
 		err := server.ListenAndServe()
 		if err != nil {
 			logger.Fatal(err)
